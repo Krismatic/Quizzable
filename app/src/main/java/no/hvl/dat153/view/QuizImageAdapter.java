@@ -38,8 +38,6 @@ public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.View
 
     @Override
     public void onBindViewHolder(@NonNull QuizImageAdapter.ViewHolder holder, int position) {
-        System.out.println(items.size());
-        items.forEach(System.out::println);
         final QuizImage quizImage = items.get(position);
 
         holder.imageView.setImageBitmap(quizImage.getImage());

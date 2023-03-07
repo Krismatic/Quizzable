@@ -143,7 +143,6 @@ public class QuizActivity extends AppCompatActivity {
             // Stops the timer.
             stopTimer();
         } else {
-            System.out.println(correctCounter);
             binding.correctAnswers.setText(correctCounter + " correct answer" + plural(correctCounter) + " out of " + counter + " question" + plural(counter));
             // Gets and removes the next image index in the order.
             current = order.pop();

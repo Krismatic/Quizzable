@@ -76,8 +76,6 @@ public class QuizImageDAO {
         boolean listSuccess = quizImages.remove(map.get(lcName));
         boolean mapSuccess = map.remove(lcName) != null;
 
-        System.out.println("list size = " + quizImages.size());
-        System.out.println("listSuccess = " + listSuccess + ", mapSuccess = " + mapSuccess);
         return listSuccess && mapSuccess;
     }
 

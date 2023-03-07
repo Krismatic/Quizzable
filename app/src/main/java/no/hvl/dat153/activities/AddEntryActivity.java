@@ -75,13 +75,11 @@ public class AddEntryActivity extends AppCompatActivity {
             if (name != null && name.length() > 0 && image.getDrawable() != null) {
                 if (QuizImageDAO.get().addQuizImage(name, bitmap)) {
                     Toast.makeText(getApplicationContext(), "Item added to database!", Toast.LENGTH_SHORT).show();
-                    //System.out.println(AnimalDAO.get().getAllAnimals().size());
                     finish();
                 } else {
                     Toast.makeText(getApplicationContext(), "This item already exists in the database!", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                System.out.println(name);
                 if (name == null || name.length() <= 0) {
                     Toast.makeText(getApplicationContext(), "You need to enter a name!", Toast.LENGTH_SHORT).show();
                 } else {
