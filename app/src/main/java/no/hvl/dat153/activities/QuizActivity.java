@@ -96,7 +96,7 @@ public class QuizActivity extends AppCompatActivity {
             next();
         });
 
-        binding.backButton.setOnClickListener(view -> ActivityUtils.startActivity(QuizActivity.this, MainActivity.class));
+        binding.backButton.setOnClickListener(view -> finish());
 
         next();
 

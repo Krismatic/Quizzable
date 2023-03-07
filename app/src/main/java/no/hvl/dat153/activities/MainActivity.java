@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Starts the DAO.
         QuizImageDAO.start(getResources());
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -33,13 +34,9 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        getResources();
-
-        //NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        //appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
+        // Switches difficulty if the switch is switched.
         binding.content.difficultySwitch.setOnCheckedChangeListener(this::switchDifficulty);
+        // Adds listeners for the buttons used to go to other activities.
         binding.content.quizButton.setOnClickListener(view -> ActivityUtils.startActivity(MainActivity.this, QuizActivity.class, "difficulty", difficulty));
         binding.content.dbButton.setOnClickListener(view -> ActivityUtils.startActivity(MainActivity.this, DatabaseActivity.class));
         binding.addEntryButton.setOnClickListener(view -> ActivityUtils.startActivity(MainActivity.this, AddEntryActivity.class));
@@ -66,13 +63,6 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-//    @Override
-//    public boolean onSupportNavigateUp() {
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-//        return NavigationUI.navigateUp(navController, appBarConfiguration)
-//                || super.onSupportNavigateUp();
-//    }
 
     /**
      * Switches the difficulty of the quiz.

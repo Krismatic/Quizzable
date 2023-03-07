@@ -13,7 +13,7 @@
         >
 
         <EditText
-            android:id="@+id/animal_input"
+            android:id="@+id/add_item_input"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
             android:inputType="text"
@@ -30,7 +30,7 @@
             android:text="Pick Image" />
 
         <ImageView
-            android:id="@+id/animal_image"
+            android:id="@+id/add_item_image"
             android:layout_width="wrap_content"
             android:layout_height="300dp"
             android:layout_gravity="center"
