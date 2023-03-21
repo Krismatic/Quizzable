@@ -15,7 +15,6 @@ import java.util.concurrent.Future;
 import no.hvl.dat153.model.QuizImage;
 
 public class QuizImageRepository {
-    private MutableLiveData<List<QuizImage>> searchResults = new MutableLiveData<>();
     private LiveData<List<QuizImage>> allQuizImages;
     private LiveData<List<QuizImage>> allQuizImagesAsc;
     private LiveData<List<QuizImage>> allQuizImagesDesc;
@@ -30,10 +29,6 @@ public class QuizImageRepository {
         if (sort.equalsIgnoreCase("asc")) return allQuizImagesAsc;
         else if (sort.equalsIgnoreCase("desc")) return allQuizImagesDesc;
         else return null;
-    }
-
-    public MutableLiveData<List<QuizImage>> getSearchResults() {
-        return searchResults;
     }
 
     public QuizImageRepository(Application application) {
