@@ -2,15 +2,31 @@ package no.hvl.dat153.model;
 
 import android.graphics.Bitmap;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "quiz_images")
 public class QuizImage implements Comparable<QuizImage> {
+
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
+    private int id;
     private String name;
     private Bitmap image;
 
     public QuizImage(String name, Bitmap image) {
+        this.id = id;
         this.name = name;
         this.image = image;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -17,14 +17,14 @@ public interface QuizImageDAO {
      * Gets all of the quiz images.
      * @return a list of all items in the database
      */
-    @Query("SELECT * FROM quizImages")
+    @Query("SELECT * FROM quiz_images")
     LiveData<List<QuizImage>> getAllQuizImages();
 
     /**
      * Gets all the names of the quiz images
      * @return a list of all names in the database
      */
-    @Query("SELECT name FROM quizImages")
+    @Query("SELECT name FROM quiz_images")
     LiveData<List<String>> getAllNames();
 
     /**
@@ -32,7 +32,7 @@ public interface QuizImageDAO {
      * @param name the name of the quiz image
      * @return list of all quiz images found with the name
      */
-    @Query("SELECT * FROM quizImages WHERE name = :name")
+    @Query("SELECT * FROM quiz_images WHERE name = :name")
     List<QuizImage> find(String name);
 
     /**
@@ -46,6 +46,6 @@ public interface QuizImageDAO {
      * Removes a quiz image from the database.
      * @param name the name of the quiz image to be removed
      */
-    @Query("DELETE FROM quizImages WHERE name = :name")
+    @Query("DELETE FROM quiz_images WHERE name = :name")
     void deleteQuizImage(String name);
 }
