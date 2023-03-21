@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,10 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import no.hvl.dat153.R;
-import no.hvl.dat153.activities.DatabaseActivity;
-import no.hvl.dat153.database.QuizImageDAO;
+import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.model.QuizImage;
-import no.hvl.dat153.utils.ActivityUtils;
 
 public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.ViewHolder> {
 
@@ -51,7 +48,7 @@ public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.View
                         // Gets the position of the item (in case it has changed)
                         int pos = items.indexOf(quizImage);
                         // Removes the item from the database.
-                        if (QuizImageDAO.get().removeQuizImage(quizImage.getName())) {
+                        if (QuizImageDAOOld.get().removeQuizImage(quizImage.getName())) {
                             // Makes the item disappear from the view.
                             notifyItemRemoved(pos);
                         }

@@ -1,6 +1,5 @@
 package no.hvl.dat153.activities;
 
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import no.hvl.dat153.R;
-import no.hvl.dat153.database.QuizImageDAO;
+import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.databinding.ActivityMainBinding;
 import no.hvl.dat153.utils.ActivityUtils;
 
@@ -27,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // Starts the DAO.
-        QuizImageDAO.start(getResources());
+        QuizImageDAOOld.start(getResources());
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

@@ -4,7 +4,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import no.hvl.dat153.database.QuizImageDAO;
+import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.databinding.ActivityAddEntryBinding;
 
 import android.app.Activity;
@@ -83,7 +83,7 @@ public class AddEntryActivity extends AppCompatActivity {
             // Checks if the required data was entered.
             if (name != null && name.length() > 0 && image.getDrawable() != null) {
                 // Attempts to add the data to the database.
-                if (QuizImageDAO.get().addQuizImage(name, bitmap)) {
+                if (QuizImageDAOOld.get().addQuizImage(name, bitmap)) {
                     Toast.makeText(getApplicationContext(), "Item added to database!", Toast.LENGTH_SHORT).show();
                     // Finishes the activity.
                     finish();

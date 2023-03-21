@@ -15,10 +15,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
-import no.hvl.dat153.database.QuizImageDAO;
+import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.databinding.ActivityQuizBinding;
 import no.hvl.dat153.model.QuizImage;
-import no.hvl.dat153.utils.ActivityUtils;
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -64,7 +63,7 @@ public class QuizActivity extends AppCompatActivity {
         // Whether hard mode was toggled on or not.
         hardMode = intent.getStringExtra("difficulty").equals("hard");
         // List of all images and names in the database.
-        quizImages = QuizImageDAO.get().getAllQuizImages();
+        quizImages = QuizImageDAOOld.get().getAllQuizImages();
         order = new Stack<>();
         for (int i = 0; i < quizImages.size(); i++) {
             order.push(i);
