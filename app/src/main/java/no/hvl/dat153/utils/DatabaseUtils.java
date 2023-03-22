@@ -40,47 +40,6 @@ public class DatabaseUtils {
         return quizImages;
     }
 
-    public static Bitmap resizeBitmap(Bitmap bitmap) {
-        final int MAX_SIZE = 10000;
-        if (bitmap.getByteCount() > MAX_SIZE) {
-            double dividend = sqrt(bitmap.getByteCount() / MAX_SIZE);
-
-            int newWidth = (int) (bitmap.getWidth() / dividend);
-            int newHeight = (int) (bitmap.getHeight() / dividend);
-
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
-            bitmap.recycle();
-            return scaledBitmap;
-        } else return bitmap;
-    }
-
-    public String saveToInternalStorage(Context context, QuizImageData quizImageData) {
-        String name = quizImageData.getName();
-        Bitmap image = quizImageData.getBitmap();
-
-        ContextWrapper cw = new ContextWrapper(context);
-        // Path to the directory
-        File directory = cw.getDir("images", Context.MODE_PRIVATE);
-        // Path to the image
-        File path = new File(directory, name + ".png");
-
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(path);
-            // Write image to the output stream.
-            image.compress(Bitmap.CompressFormat.PNG, 100, fos);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return path.getAbsolutePath();
-    }
-
     public static Bitmap getBitmapFromStorage(String path) {
         try {
             File f = new File(path);
