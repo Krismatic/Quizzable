@@ -1,6 +1,8 @@
 package no.hvl.dat153.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,9 +21,11 @@ import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.databinding.ActivityQuizBinding;
 import no.hvl.dat153.model.QuizImage;
 import no.hvl.dat153.utils.DatabaseUtils;
+import no.hvl.dat153.viewmodel.QuizViewModel;
 
 public class QuizActivity extends AppCompatActivity {
 
+    private QuizViewModel quizViewModel;
     private List<QuizImage> quizImages;
     private Stack<Integer> order;
     private boolean hardMode;
@@ -58,29 +62,44 @@ public class QuizActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        quizViewModel = new ViewModelProvider(this).get(QuizViewModel.class);
+
         binding = ActivityQuizBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         Intent intent = getIntent();
         // Whether hard mode was toggled on or not.
         hardMode = intent.getStringExtra("difficulty").equals("hard");
-        // List of all images and names in the database.
-        // TODO: Make the activity use the Room database.
-        quizImages = QuizImageDAOOld.get().getAllQuizImages();
-        order = new Stack<>();
-        for (int i = 0; i < quizImages.size(); i++) {
-            order.push(i);
-        }
-        // Shuffles the order.
-        Collections.shuffle(order);
 
         // Initialize variables.
         current = -1;
         counter = 0;
         correctCounter = 0;
         checked = false;
+        order = new Stack<>();
 
-        binding.progressBar.setMax(order.size());
-        binding.progressBar.setProgress(0);
+        quizViewModel.getAllQuizImages().observe(this, quizImages -> {
+            this.quizImages = quizImages;
+
+            for (int i = 0; i < quizImages.size(); i++) {
+                order.push(i);
+            }
+
+            // Shuffles the order.
+            Collections.shuffle(order);
+
+            binding.progressBar.setMax(order.size());
+            binding.progressBar.setProgress(0);
+
+            next();
+
+            // Starts the timer if hard mode is on.
+            if (hardMode) {
+                binding.timer.setVisibility(View.VISIBLE);
+                binding.timerProgress.setMax(MAXTIME);
+                startTimer();
+            }
+        });
 
         binding.option1.setOnClickListener(view -> {
             check(1);
@@ -98,15 +117,6 @@ public class QuizActivity extends AppCompatActivity {
         });
 
         binding.backButton.setOnClickListener(view -> finish());
-
-        next();
-
-        // Starts the timer if hard mode is on.
-        if (hardMode) {
-            binding.timer.setVisibility(View.VISIBLE);
-            binding.timerProgress.setMax(MAXTIME);
-            startTimer();
-        }
     }
 
     /**

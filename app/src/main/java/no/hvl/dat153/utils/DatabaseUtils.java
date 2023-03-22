@@ -24,6 +24,11 @@ import no.hvl.dat153.model.QuizImageData;
 
 public class DatabaseUtils {
 
+    /**
+     * Gets the default entries of the database.
+     * @param resources the application's resources
+     * @return an array of quiz image data belonging to the default entries
+     */
     public static QuizImageData[] getDefaults(Resources resources) {
         // Default entries
         QuizImageData[] quizImages = {
@@ -40,6 +45,11 @@ public class DatabaseUtils {
         return quizImages;
     }
 
+    /**
+     * Gets the bitmap from an image in the storage.
+     * @param path the path of the image
+     * @return the bitmap of the image
+     */
     public static Bitmap getBitmapFromStorage(String path) {
         try {
             File f = new File(path);

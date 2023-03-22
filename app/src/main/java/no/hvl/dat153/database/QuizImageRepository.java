@@ -44,6 +44,10 @@ public class QuizImageRepository {
         allQuizImages = quizImageDAO.getAllQuizImages();
     }
 
+    /**
+     * Inserts several quiz images into the database.
+     * @param quizImages an array of quiz image data to be added to the database
+     */
     public void insertQuizImages(final QuizImageData... quizImages) {
         database.databaseWriteExecutor.execute(() -> {
             for (QuizImageData quizImageData : quizImages) {
@@ -56,6 +60,11 @@ public class QuizImageRepository {
         });
     }
 
+    /**
+     * Inserts a quiz image into the database.
+     * @param quizImageData the data for the quiz image
+     * @return a boolean whether the quiz image was successfully added or not
+     */
     public Future<Boolean> insertQuizImage(final QuizImageData quizImageData) {
         return database.databaseWriteExecutor.submit(() -> {
             if (quizImageDAO.find(quizImageData.getName()).size() == 0) {
@@ -67,6 +76,11 @@ public class QuizImageRepository {
         });
     }
 
+    /**
+     * Deletes a quiz image.
+     * @param name the name of the quiz image
+     * @return a boolean whether the quiz image was successfully deleted or not
+     */
     public Future<Boolean> deleteQuizImage(final String name) {
         return database.databaseWriteExecutor.submit(() -> {
             List<QuizImage> searchResults = quizImageDAO.find(name);
@@ -78,10 +92,19 @@ public class QuizImageRepository {
         });
     }
 
+    /**
+     * Finds a quiz image.
+     * @param name the name of the quiz image
+     * @return the found quiz image
+     */
     public Future<QuizImage> findQuizImage(final String name) {
         return database.databaseWriteExecutor.submit(() -> quizImageDAO.find(name).get(0));
     }
 
+    /**
+     * Clears the database.
+     * @return nothing (enables use of .get() to block until the method finishes)
+     */
     public Future<Void> clearDatabase() {
         return database.databaseWriteExecutor.submit(() -> {
             quizImageDAO.clearDatabase();
@@ -92,10 +115,14 @@ public class QuizImageRepository {
                 file.delete();
             }
             return null;
-            // TODO: continue here (working on future<void> to make it possible to wait for this to finish
         });
     }
 
+    /**
+     * Saves a quiz image to the internal storage.
+     * @param quizImageData the data for the quiz image
+     * @return the path of the stored image
+     */
     private String saveToInternalStorage(QuizImageData quizImageData) {
         String name = quizImageData.getName();
         Bitmap image = quizImageData.getBitmap();
@@ -123,17 +150,12 @@ public class QuizImageRepository {
         return path.getAbsolutePath();
     }
 
+    /**
+     * Deletes an image from the internal storage
+     * @param path the path of the image
+     * @return whether the image was deleted or not
+     */
     private boolean deleteFromInternalStorage(String path) {
         return new File(path).delete();
-    }
-
-    private Bitmap getBitmapFromStorage(String path) {
-        try {
-            File f = new File(path);
-            return BitmapFactory.decodeStream(new FileInputStream(f));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }
