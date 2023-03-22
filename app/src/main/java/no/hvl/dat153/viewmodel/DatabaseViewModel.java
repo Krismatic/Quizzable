@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 
 import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.model.QuizImage;
+import no.hvl.dat153.model.QuizImageData;
 
 public class DatabaseViewModel extends AndroidViewModel {
     private QuizImageRepository repo;
@@ -28,5 +29,13 @@ public class DatabaseViewModel extends AndroidViewModel {
 
     public Future<Boolean> delete(String name) {
         return repo.deleteQuizImage(name);
+    }
+
+    public void insertSeveral(QuizImageData... quizImages) {
+        repo.insertQuizImages(quizImages);
+    }
+
+    public Future<Void> deleteAll() {
+        return repo.clearDatabase();
     }
 }

@@ -82,8 +82,18 @@ public class QuizImageRepository {
         return database.databaseWriteExecutor.submit(() -> quizImageDAO.find(name).get(0));
     }
 
-    public void clearDatabase() {
-        database.databaseWriteExecutor.execute(() -> quizImageDAO.clearDatabase());
+    public Future<Void> clearDatabase() {
+        return database.databaseWriteExecutor.submit(() -> {
+            quizImageDAO.clearDatabase();
+
+            ContextWrapper cw = new ContextWrapper(application.getApplicationContext());
+            File directory = cw.getDir("images", Context.MODE_PRIVATE);
+            for (File file : directory.listFiles()) {
+                file.delete();
+            }
+            return null;
+            // TODO: continue here (working on future<void> to make it possible to wait for this to finish
+        });
     }
 
     private String saveToInternalStorage(QuizImageData quizImageData) {

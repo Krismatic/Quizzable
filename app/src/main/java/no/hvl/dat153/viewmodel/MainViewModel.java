@@ -23,6 +23,10 @@ public class MainViewModel extends AndroidViewModel {
         allQuizImages = repo.getAllQuizImages();
     }
 
+    public LiveData<List<QuizImage>> getAllQuizImages() {
+        return allQuizImages;
+    }
+
     public void insertSeveral(QuizImageData... quizImages) {
         repo.insertQuizImages(quizImages);
     }

@@ -34,16 +34,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Checks if the database exists.
-        boolean dbExists = QuizImageRoomDatabase.exists();
-        System.out.println(dbExists);
         // Gets the view model.
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        // If the database did not exist, adds in the default entries.
-        if (!dbExists) {
-            QuizImageData[] defaultEntries = DatabaseUtils.getDefaults(getResources());
-            mainViewModel.insertSeveral(defaultEntries);
-        }
+        // If the database is empty, add in default values.
+        mainViewModel.getAllQuizImages().observe(this, quizImages -> {
+            if (quizImages.size() == 0) {
+                QuizImageData[] defaultEntries = DatabaseUtils.getDefaults(getResources());
+                mainViewModel.insertSeveral(defaultEntries);
+            }
+        });
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
