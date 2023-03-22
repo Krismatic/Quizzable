@@ -13,6 +13,7 @@ import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.database.QuizImageRoomDatabase;
 import no.hvl.dat153.databinding.ActivityMainBinding;
 import no.hvl.dat153.model.QuizImage;
+import no.hvl.dat153.model.QuizImageData;
 import no.hvl.dat153.utils.ActivityUtils;
 import no.hvl.dat153.utils.DatabaseUtils;
 import no.hvl.dat153.viewmodel.MainViewModel;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         // If the database did not exist, adds in the default entries.
         if (!dbExists) {
-            QuizImage[] defaultEntries = DatabaseUtils.getDefaults(getResources());
+            QuizImageData[] defaultEntries = DatabaseUtils.getDefaults(getResources());
             mainViewModel.insertSeveral(defaultEntries);
         }
 

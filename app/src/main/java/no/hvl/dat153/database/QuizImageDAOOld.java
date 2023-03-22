@@ -57,9 +57,9 @@ public class QuizImageDAOOld {
     public boolean addQuizImage(String name, Bitmap image) {
         String lcName = name.toLowerCase();
         if (map.containsKey(lcName)) return false;
-        QuizImage quizImage = new QuizImage(lcName, image);
-        quizImages.add(quizImage);
-        map.put(quizImage.getName(), quizImage);
+        //QuizImage quizImage = new QuizImage(lcName, image);
+        //quizImages.add(quizImage);
+        //map.put(quizImage.getName(), quizImage);
         return true;
     }
 

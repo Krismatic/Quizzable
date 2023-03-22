@@ -11,6 +11,7 @@ import java.util.concurrent.Future;
 
 import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.model.QuizImage;
+import no.hvl.dat153.model.QuizImageData;
 
 public class AddEntryViewModel extends AndroidViewModel {
 
@@ -27,7 +28,7 @@ public class AddEntryViewModel extends AndroidViewModel {
         return allQuizImages;
     }
 
-    public Future<Boolean> insert(QuizImage quizImage) {
+    public Future<Boolean> insert(QuizImageData quizImage) {
         return repo.insertQuizImage(quizImage);
     }
 }

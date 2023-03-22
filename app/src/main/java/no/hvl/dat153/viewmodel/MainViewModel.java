@@ -10,6 +10,7 @@ import java.util.List;
 
 import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.model.QuizImage;
+import no.hvl.dat153.model.QuizImageData;
 
 public class MainViewModel extends AndroidViewModel {
 
@@ -22,7 +23,7 @@ public class MainViewModel extends AndroidViewModel {
         allQuizImages = repo.getAllQuizImages();
     }
 
-    public void insertSeveral(QuizImage... quizImages) {
+    public void insertSeveral(QuizImageData... quizImages) {
         repo.insertQuizImages(quizImages);
     }
 }

@@ -37,6 +37,10 @@ public class DatabaseActivity extends AppCompatActivity {
         // Sets up the recycler view.
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.recyclerView.setAdapter(adapter);
+        databaseViewModel.getAllQuizImages().observe(this, quizImages -> {
+            adapter.setItems(quizImages);
+            adapter.notifyDataSetChanged();
+        });
 
         // Listener for sort button.
         binding.dbSortButton.setOnClickListener(view -> {

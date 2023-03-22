@@ -21,6 +21,7 @@ import no.hvl.dat153.R;
 import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.model.QuizImage;
+import no.hvl.dat153.utils.DatabaseUtils;
 
 public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.ViewHolder> {
 
@@ -44,7 +45,7 @@ public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.View
     public void onBindViewHolder(@NonNull QuizImageAdapter.ViewHolder holder, int position) {
         final QuizImage quizImage = items.get(position);
 
-        holder.imageView.setImageBitmap(quizImage.getBitmap());
+        holder.imageView.setImageBitmap(DatabaseUtils.getBitmapFromStorage(quizImage.getPath()));
         holder.textView.setText(quizImage.getName());
         holder.imageButton.setOnClickListener(view -> {
             // Creates a builder for an alert dialog.

@@ -9,6 +9,7 @@ import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.databinding.ActivityAddEntryBinding;
 import no.hvl.dat153.model.QuizImage;
+import no.hvl.dat153.model.QuizImageData;
 import no.hvl.dat153.viewmodel.AddEntryViewModel;
 
 import android.app.Activity;
@@ -93,7 +94,7 @@ public class AddEntryActivity extends AppCompatActivity {
             // Checks if the required data was entered.
             if (name != null && name.length() > 0 && image.getDrawable() != null) {
                 // Attempts to add the data to the database.
-                Future<Boolean> success = addEntryViewModel.insert(new QuizImage(name, bitmap));
+                Future<Boolean> success = addEntryViewModel.insert(new QuizImageData(name, bitmap));
                 try {
                     // If the data was successfully added...
                     if (success.get()) {

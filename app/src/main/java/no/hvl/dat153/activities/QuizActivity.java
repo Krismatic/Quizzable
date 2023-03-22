@@ -18,6 +18,7 @@ import java.util.Stack;
 import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.databinding.ActivityQuizBinding;
 import no.hvl.dat153.model.QuizImage;
+import no.hvl.dat153.utils.DatabaseUtils;
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -63,6 +64,7 @@ public class QuizActivity extends AppCompatActivity {
         // Whether hard mode was toggled on or not.
         hardMode = intent.getStringExtra("difficulty").equals("hard");
         // List of all images and names in the database.
+        // TODO: Make the activity use the Room database.
         quizImages = QuizImageDAOOld.get().getAllQuizImages();
         order = new Stack<>();
         for (int i = 0; i < quizImages.size(); i++) {
@@ -173,7 +175,7 @@ public class QuizActivity extends AppCompatActivity {
             binding.option2.setText(options.get(1));
             binding.option3.setText(options.get(2));
             // Sets the image view as the current image.
-            binding.quizImage.setImageBitmap(currentImage.getBitmap());
+            binding.quizImage.setImageBitmap(DatabaseUtils.getBitmapFromStorage(currentImage.getPath()));
 
             checked = false;
             // Restarts the timer if hard mode is on.
