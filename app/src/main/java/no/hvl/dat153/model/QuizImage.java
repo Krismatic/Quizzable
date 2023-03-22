@@ -11,6 +11,8 @@ import androidx.room.PrimaryKey;
 
 import java.io.ByteArrayOutputStream;
 
+import no.hvl.dat153.utils.DatabaseUtils;
+
 @Entity(tableName = "quiz_images")
 public class QuizImage implements Comparable<QuizImage> {
 
@@ -18,7 +20,7 @@ public class QuizImage implements Comparable<QuizImage> {
     @NonNull
     private int id;
     private String name;
-    // FIXME: Does not work with database, convert to byte[].
+    // FIXME: Storing image in database leads to crashing, store Uri instead
     private byte[] imageBytes;
 
     public QuizImage(String name, byte[] imageBytes) {
@@ -71,9 +73,9 @@ public class QuizImage implements Comparable<QuizImage> {
     }
 
     private static byte[] bitmapToByteArray(Bitmap bitmap) {
-        // Resizes the bitmap if it is too big.
-        Bitmap bmp = resizeBitmap(bitmap);
-        // Converts to byte array.
+        // Resize the bitmap if it is too big.
+        Bitmap bmp = DatabaseUtils.resizeBitmap(bitmap);
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
         byte[] byteArray = stream.toByteArray();
@@ -84,19 +86,5 @@ public class QuizImage implements Comparable<QuizImage> {
 
     private static Bitmap byteArrayToBitmap(byte[] bytes) {
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-    }
-
-    private static Bitmap resizeBitmap(Bitmap bitmap) {
-        final int MAX_SIZE = 100000;
-        if (bitmap.getByteCount() > MAX_SIZE) {
-            double dividend = sqrt(bitmap.getByteCount() / MAX_SIZE);
-
-            int newWidth = (int) (bitmap.getWidth() / dividend);
-            int newHeight = (int) (bitmap.getHeight() / dividend);
-
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false);
-            bitmap.recycle();
-            return scaledBitmap;
-        } else return bitmap;
     }
 }
