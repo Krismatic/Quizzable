@@ -30,4 +30,8 @@ public abstract class QuizImageRoomDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public static boolean exists() {
+        return INSTANCE != null;
+    }
 }

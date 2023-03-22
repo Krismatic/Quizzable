@@ -3,9 +3,13 @@ package no.hvl.dat153.activities;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import no.hvl.dat153.database.QuizImageDAOOld;
+import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.databinding.ActivityAddEntryBinding;
+import no.hvl.dat153.model.QuizImage;
+import no.hvl.dat153.viewmodel.AddEntryViewModel;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,6 +24,8 @@ import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class AddEntryActivity extends AppCompatActivity {
 
@@ -27,6 +33,9 @@ public class AddEntryActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private String name;
     private ImageView image;
+
+    private AddEntryViewModel addEntryViewModel;
+
     private final ActivityResultLauncher<Intent> launcher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -55,6 +64,7 @@ public class AddEntryActivity extends AppCompatActivity {
         binding = ActivityAddEntryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        addEntryViewModel = new ViewModelProvider(this).get(AddEntryViewModel.class);
 
         name = binding.addItemInput.getText().toString();
         image = binding.addItemImage;
@@ -83,12 +93,18 @@ public class AddEntryActivity extends AppCompatActivity {
             // Checks if the required data was entered.
             if (name != null && name.length() > 0 && image.getDrawable() != null) {
                 // Attempts to add the data to the database.
-                if (QuizImageDAOOld.get().addQuizImage(name, bitmap)) {
-                    Toast.makeText(getApplicationContext(), "Item added to database!", Toast.LENGTH_SHORT).show();
-                    // Finishes the activity.
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "This item already exists in the database!", Toast.LENGTH_SHORT).show();
+                Future<Boolean> success = addEntryViewModel.insert(new QuizImage(name, bitmap));
+                try {
+                    // If the data was successfully added...
+                    if (success.get()) {
+                        Toast.makeText(getApplicationContext(), "Item added to database!", Toast.LENGTH_SHORT).show();
+                        // Finishes the activity.
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "This item already exists in the database!", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 // Checks what is missing.

@@ -173,7 +173,7 @@ public class QuizActivity extends AppCompatActivity {
             binding.option2.setText(options.get(1));
             binding.option3.setText(options.get(2));
             // Sets the image view as the current image.
-            binding.quizImage.setImageBitmap(currentImage.getImage());
+            binding.quizImage.setImageBitmap(currentImage.getBitmap());
 
             checked = false;
             // Restarts the timer if hard mode is on.

@@ -4,12 +4,18 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.ui.AppBarConfiguration;
 
 import no.hvl.dat153.R;
 import no.hvl.dat153.database.QuizImageDAOOld;
+import no.hvl.dat153.database.QuizImageRepository;
+import no.hvl.dat153.database.QuizImageRoomDatabase;
 import no.hvl.dat153.databinding.ActivityMainBinding;
+import no.hvl.dat153.model.QuizImage;
 import no.hvl.dat153.utils.ActivityUtils;
+import no.hvl.dat153.utils.DatabaseUtils;
+import no.hvl.dat153.viewmodel.MainViewModel;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,12 +27,22 @@ public class MainActivity extends AppCompatActivity {
 
     private String difficulty = "easy";
 
+    private MainViewModel mainViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Starts the DAO.
-        QuizImageDAOOld.start(getResources());
+        // Checks if the database exists.
+        boolean dbExists = QuizImageRoomDatabase.exists();
+        System.out.println(dbExists);
+        // Gets the view model.
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        // If the database did not exist, adds in the default entries.
+        if (!dbExists) {
+            QuizImage[] defaultEntries = DatabaseUtils.getDefaults(getResources());
+            mainViewModel.insertSeveral(defaultEntries);
+        }
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

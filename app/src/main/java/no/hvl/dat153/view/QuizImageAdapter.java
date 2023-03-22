@@ -12,18 +12,25 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import no.hvl.dat153.R;
 import no.hvl.dat153.database.QuizImageDAOOld;
+import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.model.QuizImage;
 
 public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.ViewHolder> {
 
     List<QuizImage> items;
+    QuizImageRepository repo;
 
-    public QuizImageAdapter(List<QuizImage> items) {
-        this.items = items;
+    public QuizImageAdapter(QuizImageRepository repo) {
+        this.repo = repo;
+        this.items = repo.getAllQuizImages().getValue();
+        if (this.items == null) this.items = new ArrayList<>();
     }
 
     @NonNull
@@ -37,7 +44,7 @@ public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.View
     public void onBindViewHolder(@NonNull QuizImageAdapter.ViewHolder holder, int position) {
         final QuizImage quizImage = items.get(position);
 
-        holder.imageView.setImageBitmap(quizImage.getImage());
+        holder.imageView.setImageBitmap(quizImage.getBitmap());
         holder.textView.setText(quizImage.getName());
         holder.imageButton.setOnClickListener(view -> {
             // Creates a builder for an alert dialog.
@@ -48,9 +55,15 @@ public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.View
                         // Gets the position of the item (in case it has changed)
                         int pos = items.indexOf(quizImage);
                         // Removes the item from the database.
-                        if (QuizImageDAOOld.get().removeQuizImage(quizImage.getName())) {
-                            // Makes the item disappear from the view.
-                            notifyItemRemoved(pos);
+                        Future<Boolean> success = repo.deleteQuizImage(quizImage.getName());
+                        try {
+                            // If the item was successfully removed...
+                            if (success.get()) {
+                                // Makes the item disappear from the view.
+                                notifyItemRemoved(pos);
+                            }
+                        } catch (ExecutionException | InterruptedException e) {
+                            throw new RuntimeException(e);
                         }
                         Toast.makeText(view.getContext(),"The item \"" + quizImage.getName() + "\" has been deleted.",
                                 Toast.LENGTH_SHORT).show();
@@ -72,6 +85,14 @@ public class QuizImageAdapter extends RecyclerView.Adapter<QuizImageAdapter.View
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public List<QuizImage> getItems() {
+        return items;
+    }
+
+    public void setItems(List<QuizImage> items) {
+        this.items = items;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -16,8 +16,6 @@ import no.hvl.dat153.model.QuizImage;
 
 public class QuizImageRepository {
     private LiveData<List<QuizImage>> allQuizImages;
-    private LiveData<List<QuizImage>> allQuizImagesAsc;
-    private LiveData<List<QuizImage>> allQuizImagesDesc;
     private QuizImageRoomDatabase database;
     private QuizImageDAO quizImageDAO;
 
@@ -25,19 +23,21 @@ public class QuizImageRepository {
         return allQuizImages;
     }
 
-    public LiveData<List<QuizImage>> getAllQuizImages(String sort) {
-        if (sort.equalsIgnoreCase("asc")) return allQuizImagesAsc;
-        else if (sort.equalsIgnoreCase("desc")) return allQuizImagesDesc;
-        else return null;
-    }
-
     public QuizImageRepository(Application application) {
         database = QuizImageRoomDatabase.getDatabase(application);
         quizImageDAO = database.quizImageDAO();
 
         allQuizImages = quizImageDAO.getAllQuizImages();
-        allQuizImagesAsc = quizImageDAO.getAllQuizImagesAsc();
-        allQuizImagesDesc = quizImageDAO.getAllQuizImagesDesc();
+    }
+
+    public void insertQuizImages(final QuizImage... quizImages) {
+        database.databaseWriteExecutor.execute(() -> {
+            for (QuizImage quizImage : quizImages) {
+                if (quizImageDAO.find(quizImage.getName()).size() == 0) {
+                    quizImageDAO.insertQuizImage(quizImage);
+                }
+            }
+        });
     }
 
     public Future<Boolean> insertQuizImage(final QuizImage quizImage) {
@@ -58,5 +58,9 @@ public class QuizImageRepository {
 
     public Future<QuizImage> findQuizImage(final String name) {
         return database.databaseWriteExecutor.submit(() -> quizImageDAO.find(name).get(0));
+    }
+
+    public void clearDatabase() {
+        database.databaseWriteExecutor.execute(() -> quizImageDAO.clearDatabase());
     }
 }

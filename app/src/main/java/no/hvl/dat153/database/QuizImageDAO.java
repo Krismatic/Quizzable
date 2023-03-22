@@ -21,20 +21,6 @@ public interface QuizImageDAO {
     LiveData<List<QuizImage>> getAllQuizImages();
 
     /**
-     * Gets all of the quiz images sorted in ascending order.
-     * @return a list of all items in the database in ascending order
-     */
-    @Query("SELECT * FROM quiz_images ORDER BY name ASC")
-    LiveData<List<QuizImage>> getAllQuizImagesAsc();
-
-    /**
-     * Gets all of the quiz images sorted in descending order.
-     * @return a list of all items in the database in descending order
-     */
-    @Query("SELECT * FROM quiz_images ORDER BY name DESC")
-    LiveData<List<QuizImage>> getAllQuizImagesDesc();
-
-    /**
      * Gets all the names of the quiz images
      * @return a list of all names in the database
      */
@@ -62,4 +48,10 @@ public interface QuizImageDAO {
      */
     @Query("DELETE FROM quiz_images WHERE lower(name) = lower(:name)")
     void deleteQuizImage(String name);
+
+    /**
+     * Clears the entire database.
+     */
+    @Query("DELETE FROM quiz_images")
+    void clearDatabase();
 }
