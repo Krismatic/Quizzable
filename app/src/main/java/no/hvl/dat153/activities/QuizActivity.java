@@ -26,28 +26,18 @@ import no.hvl.dat153.viewmodel.QuizViewModel;
 public class QuizActivity extends AppCompatActivity {
 
     private QuizViewModel quizViewModel;
-    private List<QuizImage> quizImages;
-    private Stack<Integer> order;
-    private boolean hardMode;
-
-    private boolean checked;
-    private int current;
-    private int counter;
-    private int correctCounter;
-    private int correctOption;
-    private String correctName;
 
     private ActivityQuizBinding binding;
 
     private final int MAXTIME = 30; // Hard mode max time (seconds)
 
-    private int elapsedTime;
     private Handler timerHandler = new Handler(Looper.getMainLooper());
     private Runnable timer = new Runnable() {
         @Override
         public void run() {
-            System.out.println(elapsedTime);
-            elapsedTime++;
+            System.out.println(quizViewModel.getElapsedTime());
+            quizViewModel.incrementElapsedTime();
+            int elapsedTime = quizViewModel.getElapsedTime();
             binding.timerProgress.setProgress(MAXTIME - elapsedTime);
             if (elapsedTime < MAXTIME) {
                 timerHandler.postDelayed(this, 1000);
@@ -69,17 +59,25 @@ public class QuizActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         // Whether hard mode was toggled on or not.
-        hardMode = intent.getStringExtra("difficulty").equals("hard");
+        quizViewModel.setHardMode(intent.getStringExtra("difficulty").equals("hard"));
 
         // Initialize variables.
+        quizViewModel.setCurrent(-1);
+        quizViewModel.setCounter(0);
+        quizViewModel.setCorrectCounter(0);
+        quizViewModel.setChecked(false);
+        /*
         current = -1;
         counter = 0;
         correctCounter = 0;
         checked = false;
         order = new Stack<>();
+         */
 
         quizViewModel.getAllQuizImages().observe(this, quizImages -> {
-            this.quizImages = quizImages;
+            quizViewModel.setCurrentQuizImages(quizImages);
+
+            Stack<Integer> order = new Stack<>();
 
             for (int i = 0; i < quizImages.size(); i++) {
                 order.push(i);
@@ -91,10 +89,12 @@ public class QuizActivity extends AppCompatActivity {
             binding.progressBar.setMax(order.size());
             binding.progressBar.setProgress(0);
 
+            quizViewModel.setOrder(order);
+
             next();
 
             // Starts the timer if hard mode is on.
-            if (hardMode) {
+            if (quizViewModel.isHardMode()) {
                 binding.timer.setVisibility(View.VISIBLE);
                 binding.timerProgress.setMax(MAXTIME);
                 startTimer();
@@ -124,25 +124,27 @@ public class QuizActivity extends AppCompatActivity {
      * @param option the picked option
      */
     private void check(int option) {
-        if (checked) return;
-        checked = true;
-        counter++;
+        if (quizViewModel.isChecked()) return;
+        quizViewModel.setChecked(true);
+        quizViewModel.incrementCounter();
 
-        String correctNameCapitalized = correctName.substring(0, 1).toUpperCase() + correctName.substring(1);
+        String correctNameCapitalized = quizViewModel.getCorrectName().substring(0, 1).toUpperCase() + quizViewModel.getCorrectName().substring(1);
 
-        if (option == correctOption) correctCounter++;
+        if (option == quizViewModel.getCorrectOption()) quizViewModel.incrementCorrectCounter();
         else if (option == -1) Toast.makeText(getApplicationContext(), "Timer ran out. The correct answer was: " + correctNameCapitalized, Toast.LENGTH_SHORT).show();
         else Toast.makeText(getApplicationContext(), "Wrong answer. The correct answer was: " + correctNameCapitalized, Toast.LENGTH_SHORT).show();
 
-        binding.progressBar.setProgress(counter);
+        binding.progressBar.setProgress(quizViewModel.getCounter());
     }
 
     /**
      * Starts the next question.
      */
     private void next() {
+        int correctCounter = quizViewModel.getCorrectCounter();
+        int counter = quizViewModel.getCounter();
         // Checks if the quiz is finished.
-        if (order.size() <= 0) {
+        if (quizViewModel.getOrder().size() <= 0) {
             binding.correctAnswers.setText("You finished the quiz with " + correctCounter + " correct answer" + plural(correctCounter) + " out of " + counter + " question" + plural(counter));
             // Removes some views.
             binding.quizImage.setVisibility(View.INVISIBLE);
@@ -154,17 +156,18 @@ public class QuizActivity extends AppCompatActivity {
             // Stops the timer.
             stopTimer();
         } else {
+            List<QuizImage> quizImages = quizViewModel.getCurrentQuizImages();
             binding.correctAnswers.setText(correctCounter + " correct answer" + plural(correctCounter) + " out of " + counter + " question" + plural(counter));
             // Gets and removes the next image index in the order.
-            current = order.pop();
+            quizViewModel.setCurrent(quizViewModel.getOrder().pop());
             // Gets the current image.
-            QuizImage currentImage = quizImages.get(current);
+            QuizImage currentImage = quizImages.get(quizViewModel.getCurrent());
             // Gets the name of the current image.
-            correctName = currentImage.getName();
+            quizViewModel.setCorrectName(currentImage.getName());
             // Creates a list of options.
             List<String> options = new ArrayList<>();
             // Adds the name of the current image to the options.
-            options.add(correctName);
+            options.add(quizViewModel.getCorrectName());
 
             Random random = new Random();
             // Adds two random options
@@ -179,7 +182,7 @@ public class QuizActivity extends AppCompatActivity {
             // Shuffles the list of options
             Collections.shuffle(options);
             // Finds out which option is correct
-            correctOption = options.indexOf(currentImage.getName()) + 1;
+            quizViewModel.setCorrectOption(options.indexOf(currentImage.getName()) + 1);
             // Sets the names onto their respective option buttons
             binding.option1.setText(options.get(0));
             binding.option2.setText(options.get(1));
@@ -187,9 +190,9 @@ public class QuizActivity extends AppCompatActivity {
             // Sets the image view as the current image.
             binding.quizImage.setImageBitmap(DatabaseUtils.getBitmapFromStorage(currentImage.getPath()));
 
-            checked = false;
+            quizViewModel.setChecked(false);
             // Restarts the timer if hard mode is on.
-            if (hardMode) startTimer();
+            if (quizViewModel.isHardMode()) startTimer();
         }
     }
 
@@ -198,7 +201,7 @@ public class QuizActivity extends AppCompatActivity {
      */
     private void startTimer() {
         timerHandler.removeCallbacks(timer);
-        elapsedTime = 0;
+        quizViewModel.setElapsedTime(0);
         binding.timerProgress.setProgress(MAXTIME);
         timerHandler.postDelayed(timer, 1000);
     }
@@ -217,5 +220,17 @@ public class QuizActivity extends AppCompatActivity {
      */
     private String plural(int i) {
         return i != 1 ? "s" : "";
+    }
+
+    public int getCounter() {
+        return quizViewModel.getCounter();
+    }
+
+    public int getCorrectCounter() {
+        return quizViewModel.getCorrectCounter();
+    }
+
+    public int getCorrectOption() {
+        return quizViewModel.getCorrectOption();
     }
 }

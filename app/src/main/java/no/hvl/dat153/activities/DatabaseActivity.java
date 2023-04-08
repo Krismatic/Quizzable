@@ -1,6 +1,7 @@
 package no.hvl.dat153.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -18,6 +20,7 @@ import no.hvl.dat153.R;
 import no.hvl.dat153.database.QuizImageDAOOld;
 import no.hvl.dat153.database.QuizImageRepository;
 import no.hvl.dat153.databinding.ActivityDatabaseBinding;
+import no.hvl.dat153.model.QuizImage;
 import no.hvl.dat153.model.QuizImageData;
 import no.hvl.dat153.utils.ActivityUtils;
 import no.hvl.dat153.utils.DatabaseUtils;
@@ -26,7 +29,7 @@ import no.hvl.dat153.viewmodel.DatabaseViewModel;
 
 public class DatabaseActivity extends AppCompatActivity {
 
-    private final QuizImageAdapter adapter = new QuizImageAdapter(new QuizImageRepository(getApplication()));
+    private QuizImageAdapter adapter;
     private ActivityDatabaseBinding binding;
 
     private DatabaseViewModel databaseViewModel;
@@ -34,6 +37,8 @@ public class DatabaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        adapter = new QuizImageAdapter(new QuizImageRepository(getApplication()));
 
         binding = ActivityDatabaseBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -142,5 +147,9 @@ public class DatabaseActivity extends AppCompatActivity {
             adapter.setItems(quizImages);
             adapter.notifyDataSetChanged();
         });
+    }
+
+    public LiveData<List<QuizImage>> getAllQuizImages() {
+        return databaseViewModel.getAllQuizImages();
     }
 }

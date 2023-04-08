@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".application.QuizApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,15 +14,15 @@
         tools:targetApi="31">
         <activity
             android:name=".activities.DatabaseActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="Database" />
         <activity
             android:name=".activities.QuizActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="Quiz" />
         <activity
             android:name=".activities.AddEntryActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="Add Entry"
             android:launchMode="singleTask" />
         <activity
