@@ -12,6 +12,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,5 +32,10 @@ public class MainActivityTest {
         Intents.init();
         onView(withId(R.id.quiz_button)).perform(click());
         intended(hasComponent(QuizActivity.class.getName()));
+    }
+
+    @After
+    public void cleanUp() {
+        Intents.release();
     }
 }

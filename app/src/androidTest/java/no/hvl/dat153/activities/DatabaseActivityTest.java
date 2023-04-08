@@ -95,6 +95,8 @@ public class DatabaseActivityTest {
 
         int after = atomicAfter.get();
 
+        Intents.release();
+
         assertEquals(before + 1, after);
     }
 
